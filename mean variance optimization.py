@@ -45,35 +45,6 @@ for j in range(0,n_tickers):
 
 RMBK=market_data.dropna()    
 
-
-# Create benchmark
-bench='SPY'
-benchmark=pd.DataFrame()
-data=yf.download(bench,start_date,end_date)
-benchmark[bench]=data.Close
-benchmark=benchmark.pct_change(fill_method='ffill')
-b_mean=benchmark.mean()
-b_sd=benchmark.std()
-
-#In case want to send manual return benchmark
-b_mean[0]=0.005
-b_sd[0]=0.02
-# define number of securities in portfolio
-p=2
-
-#Define weights
-weights=[]
-for weight in range(0,p):
-    weights.append(1/p)
-
-
-# Creating potential combinations
-c=p
-master_combination=itertools.combinations(total_tickers,c)
-combinations=[]
-for combo in master_combination:
-    combinations.append(combo)
-
 class portfolio_sd:
     def __init__(self,combo,RMBK,return_target):
         self.combo=combo
@@ -108,12 +79,3 @@ class portfolio_sd:
     def sigma(self):
         sd=(self.stock_var()+self.cov())**(1/2)
         return sd
-
-# Create portfolio
-possibles={}
-for combo in combinations:
-    portfolio=portfolio_sd(weights,combo,RMBK)
-    if portfolio.portfolio_return()>b_mean[0] and portfolio.sigma()<b_sd[0]:
-        possibles[combo]=portfolio.portfolio_return(),portfolio.sigma()
-    print(combo)
-print("possible number of winners are: ",len(possibles)/len(combinations))
