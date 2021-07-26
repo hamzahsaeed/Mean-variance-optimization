@@ -43,7 +43,7 @@ for j in range(0,n_tickers):
     data=yf.download(total_tickers[j],start_date,end_date)
     market_data[total_tickers[j]]=data.Close
 
-RMBK=market_data.dropna()    
+RMBK=market_data.dropna(axis=1)    
 
 class portfolio_sd:
     def __init__(self,combo,RMBK,return_target):
